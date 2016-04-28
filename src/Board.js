@@ -128,6 +128,7 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
+
       var counter = 0;
 
       // iterate through keys, each time checking colIndex
@@ -165,7 +166,6 @@
 
       return false;
     },
-
 
     // Major Diagonals - go from top-left to bottom-right
     // --------------------------------------------------------------

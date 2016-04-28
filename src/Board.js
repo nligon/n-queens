@@ -174,7 +174,6 @@
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
       var counter = 0;
       for (var key in this.attributes) {
-        console.log(this.attributes[key][Number(key) + majorDiagonalColumnIndexAtFirstRow]);
         if (this.attributes[key][Number(key) + majorDiagonalColumnIndexAtFirstRow] === 1) {
           counter++;
         }
@@ -182,9 +181,7 @@
       return counter > 1 ? true : false;
     },
 
-    // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      // var topRow = false;
       var leftColumn = false;
       // CHECKS TOP ROW
       for (var i = 0; i < this.attributes[0].length; i++) {
@@ -194,24 +191,29 @@
       }
 
       // CHECKS LEFT COLUMN
-      /* innermost loop: checks single index at key and i++.
-         // outermost loop: runs the above in a for loop, increasing k 'row length' number of times. */
       var testarr = [];
 
       //iterate through single diagonal, pushing values to array
-      var subroutine = function() {
+      var row = this.attributes;
+      var subroutine = function(startKey) {
+        var pieces = 0;
         indCounter = 0;
-        for (var i = 0; i < this.attributes[0].length - 1; i++) {
-          testarr.push(this.attributes[i + 1][indCounter]);
+        for (var i = 0; i < row[0].length - startKey; i++) {
+          if (row[i + startKey][indCounter] === 1) {
+            pieces++;
+          }
           indCounter++;
+          if (pieces > 1) {
+            leftColumn = true;
+          }
         }
+      };
+      for (var startKey = 0; startKey < row[0].length; startKey++) {
+        subroutine(startKey);
       }
-      subroutine();
-      console.log(testarr);
 
-      return "peas";
+      return leftColumn;
     },
-
 
 
     // Minor Diagonals - go from top-right to bottom-left
@@ -219,12 +221,52 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      var counter = 0;
+      var index = minorDiagonalColumnIndexAtFirstRow;
+      // loops through the rows in the outter array
+      for (var key in this.attributes) {
+        // if the current square has a piece on it
+        if (this.attributes[key][index] === 1) {
+          // increment counter
+          counter++;
+        }
+        index--;
+      }
+      return counter > 1 ? true : false;
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      return false; // fixme
+      var row = this.attributes;
+      var rightColumn = false;
+      // CHECKS TOP ROW
+      for (var i = 0; i < row[0].length; i++) {
+        if (this.hasMinorDiagonalConflictAt(i)) {
+          return true;
+        }
+      }
+
+      // CHECKS RIGHT COLUMN
+      //iterate through single minor diagonal, pushing values to array
+
+      var subroutine = function(startKey) {
+        var pieces = 0;
+        var indCounter = row[0].length;
+        for (var i = 0; i < row[0].length - startKey; i++) {
+          if (row[i + startKey][indCounter] === 1) {
+            pieces++;
+          }
+          indCounter--;
+          if (pieces > 1) {
+            rightColumn = true;
+          }
+        }
+      };
+      for (var startKey = 0; startKey < row[0].length; startKey++) {
+        subroutine(startKey);
+      }
+
+      return rightColumn;
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/

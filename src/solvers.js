@@ -13,18 +13,78 @@
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
 
-
+// initialize
+// rows
+// togglePiece
+// hasAnyRooksConflicts
+// _isInBounds
 
 window.findNRooksSolution = function(n) {
-  var solution = undefined; //fixme
+  var solution = [];
+  var board = new Board({ n: n });
+  console.log("New board: ", board);
 
-  console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
-  return solution;
+  var getSolutions = function(rowsLeft) {
+    // if all rows exhausted
+    if (rowsLeft === 0) {
+      // increment solution count
+      console.log("rowsleft 0! answer: ", board);
+      return board;
+      // stop
+    }
+
+    // iterate over possible decisions
+    for (var i = 0; i < n; i++) {
+      // place a piece 
+      board.togglePiece(n - rowsLeft, i);
+      console.log("toggled: ", board)
+        // if no conflicts on board
+      if (!board.hasAnyRooksConflicts()) {
+        // recurse into remaining problem 
+        getSolutions(rowsLeft - 1);
+      }
+      // unplace a piece
+      board.togglePiece(n - rowsLeft, i);
+    }
+  };
+  getSolutions(n);
+
+  // var solution = solution || 'No solution.';
+  console.log("final board: ", board)
+  return board;
 };
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var solutionCount = 0;
+  var board = new Board({ n: n });
+
+  var getSolutions = function(rowsLeft) {
+    // if all rows exhausted
+    if (rowsLeft === 0) {
+      // increment solution count
+      solutionCount++;
+      // stop
+      return;
+    }
+
+    // iterate over possible decisions
+    for (var i = 0; i < n; i++) {
+      // place a piece 
+      board.togglePiece(n - rowsLeft, i);
+      // if no conflicts on board
+      if (!board.hasAnyRooksConflicts()) {
+        // recurse into remaining problem 
+        getSolutions(rowsLeft - 1);
+      }
+      // unplace a piece
+      board.togglePiece(n - rowsLeft, i);
+    }
+
+
+    // remove piece
+  };
+  getSolutions(n);
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
